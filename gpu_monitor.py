@@ -1,7 +1,10 @@
+import logging
 import queue
+import sys
 import threading
 import tkinter as tk
 from dataclasses import dataclass
+from pathlib import Path
 from tkinter import messagebox
 from tkinter import ttk
 
@@ -248,9 +251,37 @@ class MonitorApp:
 
 
 def main() -> None:
+    log_path = _configure_logging()
+    _install_exception_hook(log_path)
     root = tk.Tk()
     app = MonitorApp(root)
     root.mainloop()
+
+
+def _configure_logging() -> Path:
+    if getattr(sys, "frozen", False):
+        base_dir = Path(sys.executable).resolve().parent
+    else:
+        base_dir = Path.cwd()
+    log_path = base_dir / "gpu_monitor.log"
+    logging.basicConfig(
+        filename=log_path,
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+    )
+    logging.info("GPU Monitor started")
+    return log_path
+
+
+def _install_exception_hook(log_path: Path) -> None:
+    def handle_exception(exc_type, exc_value, exc_traceback) -> None:
+        logging.exception("Unhandled exception", exc_info=(exc_type, exc_value, exc_traceback))
+        messagebox.showerror(
+            "Unexpected Error",
+            f"An unexpected error occurred. See the log for details:\\n{log_path}",
+        )
+
+    sys.excepthook = handle_exception
 
 
 if __name__ == "__main__":

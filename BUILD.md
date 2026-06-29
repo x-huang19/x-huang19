@@ -29,3 +29,15 @@ These steps let you build a Windows executable from WSL so you can double-click 
 
 - Make sure the Windows machine can reach the server over SSH (port 22 by default).
 - If you prefer using WSL Python instead of Windows Python, you can build a Linux binary, but Windows cannot run it directly.
+
+## Troubleshooting (EXE won't open)
+
+1. Run from Command Prompt to see errors:
+
+   ```bash
+   dist\\gpu_monitor.exe
+   ```
+
+2. Check the log file next to the EXE (`gpu_monitor.log`) for startup errors.
+3. Ensure Microsoft Visual C++ Redistributable is installed (required by some Python wheels).
+4. Windows Defender or antivirus may quarantine the EXE; restore/allow it if blocked.
