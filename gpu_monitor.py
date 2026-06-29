@@ -8,10 +8,7 @@ from pathlib import Path
 from tkinter import messagebox
 from tkinter import ttk
 
-try:
-    import paramiko
-except ImportError:  # pragma: no cover - handled by UI
-    paramiko = None
+import paramiko
 
 DEFAULT_COMMAND = "nvidia-smi"
 DEFAULT_INTERVAL = 10
@@ -109,13 +106,6 @@ class MonitorApp:
 
     def start_monitoring(self) -> None:
         if self.is_running:
-            return
-
-        if paramiko is None:
-            messagebox.showerror(
-                "Missing dependency",
-                "paramiko is required. Please install it with: pip install paramiko",
-            )
             return
 
         host = self.host_entry.get().strip()
@@ -251,11 +241,23 @@ class MonitorApp:
 
 
 def main() -> None:
+    _hide_console_window()
     log_path = _configure_logging()
     _install_exception_hook(log_path)
     root = tk.Tk()
     app = MonitorApp(root)
     root.mainloop()
+
+
+def _hide_console_window() -> None:
+    if sys.platform != "win32":
+        return
+
+    import ctypes
+
+    console_window = ctypes.windll.kernel32.GetConsoleWindow()
+    if console_window:
+        ctypes.windll.user32.ShowWindow(console_window, 0)
 
 
 def _configure_logging() -> Path:

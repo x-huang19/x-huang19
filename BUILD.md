@@ -17,13 +17,13 @@ These steps let you build a Windows executable from WSL so you can double-click 
    /mnt/c/Users/<YourUser>/AppData/Local/Programs/Python/Python311/python.exe -m pip install pyinstaller
    ```
 
-2. Build the exe (replace the Python path with yours):
+2. Build the exe (replace the Python path with yours). Use the `.pyw` entry point and `--windowed`/`--noconsole` so Windows does not show a command-line window when you double-click the EXE:
 
    ```bash
-   /mnt/c/Users/<YourUser>/AppData/Local/Programs/Python/Python311/python.exe -m PyInstaller --noconsole --onefile gpu_monitor.py
+   /mnt/c/Users/<YourUser>/AppData/Local/Programs/Python/Python311/python.exe -m PyInstaller --windowed --noconsole --onefile --name gpu_monitor gpu_monitor.pyw
    ```
 
-3. The executable will be in `dist/gpu_monitor.exe`. Double-click it on Windows.
+3. The executable will be in `dist/gpu_monitor.exe`. Double-click it on Windows; only the GUI window should appear.
 
 ## Notes
 
